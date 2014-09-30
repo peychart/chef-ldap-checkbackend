@@ -1,0 +1,31 @@
+#!/bin/bash
+# Le test consiste à vérifier la présence de l'attribut 'contextCSN' et a comparer sa valeur a une autre reference...
+# $?=0 -> test reussi
+# La reference est le premier serveur disponible d'une liste de serveurs referents:
+#	- si aucune reference ne repond, le test est reussi... (car je suis le dernier actif dans le cluster!)
+#	- si la reference a le meme numero de serie, le test est reussi (car je suis a jour).
+#	- si la reference a une date de mise à jour inferieure, le test est reussi... (cas de 2 slaves non forcement a jour restant seuls)
+#	- sinon, test faux !
+#
+# Le bind étant anonyme, il faut veiller à ce que la base soit accessible.
+# Exemple d'ACL pour slapd:
+# access to dn.base=dc=pf
+#           by * read
+#
+#PE-20140110
+#
+RETRY=3
+REFERENTS=<%=referentes.each |i| do "#{i} " end-%>
+
+get_contextCSN () {
+for I in $* ; do
+$(which snmpget) -v3 -t2 -r1 -l "#{snmp_secLevel}" -a SHA -A "#{snmp_password}" -x AES -X "#{snmp_password}" -u "#{snmp_user}" $I "NET-SNMP-EXTEND-MIB::nsExtendOutLine.\"#{snmp_extend}\".1" 2>/dev/null| sed -e 's/^.*STRING: //' | grep "\." && break
+done
+}
+
+for (( i=1 ; i <= $RETRY ; i++ )) do
+  sleep 0.1
+  ME=$(get_contextCSN localhost | cut -d'.' -f1)
+  REF=$(get_contextCSN $REFERENTS | cut -d'.' -f1)
+  [ ! -z "$ME" ] && [ 0$ME -ge 0$REF ] && break
+done

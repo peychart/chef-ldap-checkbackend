@@ -1,0 +1,16 @@
+# default: off
+# description: Test backend pour HAProxy
+service chk_backend
+{
+        type            = UNLISTED
+        protocol        = tcp
+        socket_type     = stream
+        port            = 5667
+        wait            = no
+        user            = nobody
+        server          = /usr/local/bin/chk_backend
+        server_args     = -n
+        log_on_failure  += USERID
+        disable         = no
+        only_from       = 0.0.0.0/0
+}

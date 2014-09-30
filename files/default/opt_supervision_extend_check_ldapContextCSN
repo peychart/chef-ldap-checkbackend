@@ -1,0 +1,9 @@
+#!/bin/bash
+# Récupération du contextCSN de la base LDAP locale pour controle des mises à jour depuis les slaves...
+#PE 20140113
+
+for I in $($(which ldapsearch) -x -LLL -o nettimeout=1 -l 1 -h localhost -b dc=pf -s base contextCSN 2>/dev/null \
+    |grep -i ^contextCSN: |cut -d' ' -f2) ; do
+        [ 0$(echo $I |cut -d'.' -f1) -gt 0$(echo $CONTEXT |cut -d'.' -f1) ] && CONTEXT=$I
+done
+echo $CONTEXT

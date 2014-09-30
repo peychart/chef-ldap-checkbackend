@@ -1,0 +1,25 @@
+#!/bin/bash
+ 
+echo -n "Backend '$(hostname -f)' is "
+ 
+case $1 in
+	enable)
+		[ -f /var/tmp/disable-backend ] && rm /var/tmp/disable-backend
+		echo "enabled"
+	;;
+	disable)
+		touch /var/tmp/disable-backend
+		echo "disabled"
+	;;
+	status)
+		if [ -f /var/tmp/disable-backend ] ; then
+			echo "disabled"
+		else
+			echo "enabled"
+		fi
+	;;
+	*)
+		echo "Usage: enable|disable|status"
+		echo "State will remain persistent !"
+	;;
+esac

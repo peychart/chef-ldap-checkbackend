@@ -1,0 +1,31 @@
+#!/bin/bash
+ 
+# xinetd passe l'argument '-n' -> attendre URL                        
+# pas d'argument -> reponse immediate (mode interactif)
+ 
+getopts "n" opt ; [ "$opt" == "n" ] && read url
+ 
+# Les tests sont effectues par un script externe et ne doivent pas produire de sortie.
+# Code retour de '/usr/local/etc/$(basename $0).sh' -> si 0, service OK
+ 
+[ -f /usr/local/etc/$(basename $0).sh ] && . /usr/local/etc/$(basename $0).sh || false
+ 
+if [ $? -ne 0 ] || [ -f /var/tmp/disable-backend ] ; then
+ 
+cat<<EOF
+HTTP/1.0 503 Service Unavailable
+Cache-Control: no-cache
+Connection: close
+ 
+EOF
+ 
+else
+ 
+cat<<EOF
+HTTP/1.0 200 OK
+Cache-Control: no-cache
+Connection: close
+ 
+EOF
+ 
+fi
