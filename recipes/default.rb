@@ -17,49 +17,59 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+include_recipe 'xinetd::default'
 include_recipe 'cookbook-snmp::default'
 
 cookbook_file '/usr/local/bin/chk_backend' do
-  source 'usr_local_bin_chk_backend.erb'
-  owner root
-  groupe root
+  source 'usr_local_bin_chk_backend'
+  owner 'root'
+  group 'root'
   mode 0755
 end
 
 cookbook_file '/root/backend' do
   source 'root_backend'
-  owner root
-  groupe root
+  owner 'root'
+  group 'root'
   mode 0755
+end
+
+%w[ /opt /opt/supervision /opt/supervision/extend ].each do |path|
+  directory path do
+    owner 'root'
+    group 'root'
+    mode '0755'
+    action :create
+  end
 end
 
 cookbook_file '/opt/supervision/extend/check_ldapContextCSN' do
   source 'opt_supervision_extend_check_ldapContextCSN'
-  owner root
-  groupe root
+  owner 'root'
+  group 'root'
   mode 0755
 end
 
 template '/usr/local/etc/chk_backend.sh' do
   source 'usr_local_etc_chk_backend.sh.erb'
-  owner root
-  groupe root
+  owner 'root'
+  group 'root'
   mode 0755
   variables({
-    :referents => node['ldap-checkbackend'][:referents]
-    :snmp_secLevel => node['ldap-checkbackend'][:snmp_secLevel]
-    :snmp_user => node['ldap-checkbackend'][:snmp_user]
-    :snmp_password => node['ldap-checkbackend'][:snmp_password]
-    :snmp_extend => node['ldap-checkbackend'][:snmp_extend]
+    :referents => node['chef-ldap-checkbackend']['referents'],
+    :snmp_secLevel => node['chef-ldap-checkbackend']['snmp_secLevel'],
+    :snmp_user => node['chef-ldap-checkbackend']['snmp_user'],
+    :snmp_password => node['chef-ldap-checkbackend']['snmp_password'],
+    :snmp_extend => node['chef-ldap-checkbackend']['snmp_extend']
   })
 end
 
 cookbook_file '/etc/xinetd.d/chk_backend' do
   source 'etc_xinetd.d_chk_backend'
-  owner root
-  groupe root
+  owner 'root'
+  group 'root'
   mode 0644
-  notifies :restart, 'xinetd', :immediately
+  notifies :restart, 'service[xinetd]', :immediately
 end
 
 service 'xinetd' do

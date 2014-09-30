@@ -6,4 +6,5 @@ description      'Installs/Configures chef-ldap-checkbackend'
 long_description 'Installs/Configures chef-ldap-checkbackend'
 version          '0.1.0'
 depends          'cookbook-snmp'
+depends          'xinetd'
 

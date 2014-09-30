@@ -2,7 +2,7 @@
 
  This chef cookbook installs the components which allow to control the update of all the slave databases in ldap clusters...
 
- Depends in the snmp cookbook.
+ Depends on: 'cookbook-snmp' && 'xinetd'.
 
 ## Supported Platforms
 

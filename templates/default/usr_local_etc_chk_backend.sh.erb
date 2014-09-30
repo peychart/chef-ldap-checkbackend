@@ -15,7 +15,7 @@
 #PE-20140110
 #
 RETRY=3
-REFERENTS=<%=referentes.each |i| do "#{i} " end-%>
+REFERENTS=<% @referents.each do |i| -%><%= "#{i} " -%><% end -%>
 
 get_contextCSN () {
 for I in $* ; do
