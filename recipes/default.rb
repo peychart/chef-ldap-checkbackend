@@ -47,6 +47,8 @@ template '/usr/local/etc/chk_backend.sh' do
   mode 0755
   variables({
     :referents => node['ldap-checkbackend'][:referents]
+    :snmp_secLevel => node['ldap-checkbackend'][:snmp_secLevel]
+    :snmp_user => node['ldap-checkbackend'][:snmp_user]
     :snmp_password => node['ldap-checkbackend'][:snmp_password]
     :snmp_extend => node['ldap-checkbackend'][:snmp_extend]
   })
