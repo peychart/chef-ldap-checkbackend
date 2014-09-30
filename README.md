@@ -1,4 +1,4 @@
-# chef-ldap-ldap-checkbackend-cookbook
+# chef-ldap-checkbackend-cookbook
 
  This chef cookbook installs the components which allow to control the update of all the slave databases in ldap clusters...
 
