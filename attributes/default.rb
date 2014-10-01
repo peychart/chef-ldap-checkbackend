@@ -2,7 +2,7 @@
 # Cookbook Name:: chef-checkbackend
 # Attributes:: chef-checkbackend
 #
-default['chef-ldap-checkbackend']['referents'] = ['ldap2']
+default['chef-ldap-checkbackend']['referents'] = ['']
 default['chef-ldap-checkbackend']['snmp_secLevel'] = 'authPriv'
 default['chef-ldap-checkbackend']['snmp_user'] = 'username'
 default['chef-ldap-checkbackend']['snmp_password'] = 'testpass'
